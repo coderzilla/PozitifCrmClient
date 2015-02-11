@@ -1,0 +1,1 @@
+﻿var globalmodule = angular.module('App', []).value('$', $);

@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = null;
+
+}
+<!DOCTYPE html>
+<html ng-app="App">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> My ASP.NET Application</title>
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/angular.js"></script>
+
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="http://localhost:1581/signalr/hubs"></script>
+
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container" ng-controller="mainCtrl">
+        <div ng-show="showLogin" style="width: 30%; margin-left: 35% !important; margin-top:10%;" class="form-signin">
+            <h2 class="form-signin-heading">Chat Başlat</h2>
+            <input ng-model="User.Name" type="text" class="form-control" placeholder="Ad Soyad" autofocus>
+            <br />
+            <input ng-model="User.Email" type="email" class="form-control" placeholder="Email address">
+            <br />
+            <button class="btn btn-lg btn-primary btn-block" ng-click="ChatStart()" type="button">Başlat</button>
+        </div>
+
+        <div ng-show="showChat" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
+            <h2>Hoş geldiniz.</h2>
+            <ul style="list-style:none; padding:10px; height:175px; overflow-y: scroll; overflow-x: hidden;  border: 1px solid rgb(228, 228, 228); border-radius: 5px;">
+                <li ng-repeat="msg in messages"><span style="color:blue"> {{msg.Name}} :</span> {{msg.Message}}</li>
+            </ul>
+            <textarea ng-keypress="EnterSend($event.keyCode)" class="form-control" placeholder="Mesajınız..." ng-model="User.Message"></textarea>
+            <br />
+            <button class="btn btn-lg btn-primary btn-block" ng-click="sendMessage()" type="button">Gönder</button>
+        </div>
+    </div>
+
+
+    <script src="~/Scripts/Chat/app.js"></script>
+    <script src="~/Scripts/Chat/ChatService.js"></script>
+    <script src="~/Scripts/Chat/ChatController.js"></script>
+</body>
+</html>
+
+
