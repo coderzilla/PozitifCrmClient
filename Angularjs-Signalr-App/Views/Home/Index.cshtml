@@ -24,9 +24,11 @@
     <div class="container" ng-controller="mainCtrl">
         <div ng-show="showLogin" style="width: 30%; margin-left: 35% !important; margin-top:10%;" class="form-signin">
             <h2 class="form-signin-heading">Chat Başlat</h2>
-            <input ng-model="User.Name" type="text" class="form-control" placeholder="Ad Soyad" autofocus>
+            <input ng-model="User.Name" type="text" required ng-minlength="2" class="form-control" placeholder="Ad Soyad" autofocus>
             <br />
-            <input ng-model="User.Email" type="email" class="form-control" placeholder="Email address">
+            <input ng-model="User.Email" type="email" required class="form-control" placeholder="Email address">
+            <br />
+            <input ng-model="User.Telefon" type="text" required ng-minlength="11" ng-maxlength="11" class="form-control" placeholder="Telefon">
             <br />
             <button class="btn btn-lg btn-primary btn-block" ng-click="ChatStart()" type="button">Başlat</button>
         </div>

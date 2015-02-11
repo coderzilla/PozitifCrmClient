@@ -7,6 +7,9 @@ globalmodule.controller('mainCtrl', function ($scope, ChatService) {
 
     $scope.ChatStart = function () {
         $scope.User.SignalRId = ChatService.conn_Id();
+        $.post("http://localhost:1581/", { User: $scope.User }, function (data) {
+
+        });
         if ($scope.User.Name.length > 3) {
             $scope.showLogin = false;
             $scope.showChat = true;
