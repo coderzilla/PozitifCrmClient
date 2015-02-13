@@ -36,7 +36,7 @@
         <div ng-show="showChat" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
             <h2>Hoş geldiniz.</h2>
             <ul style="list-style:none; padding:10px; height:175px; overflow-y: scroll; overflow-x: hidden;  border: 1px solid rgb(228, 228, 228); border-radius: 5px;">
-                <li ng-repeat="msg in messages"><span style="color:blue"> {{msg.Name}} :</span> {{msg.Message}}</li>
+                <li ng-repeat="msg in messages"><span style="color:blue"> {{msg.NameSurname}} :</span> {{msg.Message}}</li>
             </ul>
             <textarea ng-keypress="EnterSend($event.keyCode)" class="form-control" placeholder="Mesajınız..." ng-model="User.Message"></textarea>
             <br />

@@ -4,7 +4,7 @@ globalmodule.service('ChatService', function ($, $rootScope) {
     var hubproxy = $.connection.chat;
     var _conn = $.connection.hub;
     var _connopen = false;
- 
+
 
     function _connectionOpen() {
         if ($.connection.hub.id != undefined) {
@@ -13,12 +13,12 @@ globalmodule.service('ChatService', function ($, $rootScope) {
                     console.log('Yeniden Bağlandınız')
                 }
                 else if (change.newState === $.signalR.connectionState.connected) {
-                    console.log('Bağlısınız')
+                    console.log('Bağlısınız');
                 }
                 else if (_conn.state == $.signalR.connectionState.disconnected) {
                     if (_connopen) {
-                        $.connection.hub.reconnecting(function () { 
-                            OnReconnected(); 
+                        $.connection.hub.reconnecting(function () {
+                            OnReconnected();
                         });
                     }
                     else {
@@ -34,8 +34,7 @@ globalmodule.service('ChatService', function ($, $rootScope) {
                 }
             });
         }
-        else
-        {
+        else {
             _conn.logging = true;
             _conn.start()
             .done(function (change) {
@@ -58,7 +57,7 @@ globalmodule.service('ChatService', function ($, $rootScope) {
             if (_connectionOpen())
             { hubproxy.server.sendMessage(data); }
             return "";
-        },
+        }, 
         gethub: hubproxy.client,
         conn_Id: connId_Get
     };

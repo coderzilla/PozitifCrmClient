@@ -1,52 +1,32 @@
 ﻿
 globalmodule.controller('mainCtrl', function ($scope, ChatService) {
-   
     var hubproxy = ChatService;
-    ChatService.connOpen;
-    $scope.messages = [];
-    $scope.showLogin = true; 
-    var positions;
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showlocation);
+   
+    $scope.messages = []; 
+    if (localStorage.getItem('myUniqIdentity') == null) {
+        $scope.showLogin = true;
+        $scope.showChat = false;
     }
-    var ip = "";
-    $.get('http://jsonip.com', function (res) {ip = res.ip; });
-    function showlocation(ps) { 
-        positions = ps;
-    }
-    $scope.ChatStart = function () {
-        //$scope.User.SignalRId = ChatService.conn_Id();
-     
-
-       
-        $scope.User.IpAddress = ip;
-        $scope.User.UserUniqueIdentifier = null;
-        
-        $scope.User.InboundUrl = window.location.href;
-        var now = new Date();
-        $scope.User.LastConnectionDate = now.toLocaleString();
-        $scope.User.SkillId = null;
-        $scope.User.UserAgent = null; 
-        $scope.User.Latitude = positions.coords.latitude.toString();
-        $scope.User.Longitude = positions.coords.longitude.toString(); 
-        $.post("http://localhost:1581/Guests/Create", { guest: $scope.User }, function (data) {
-             
-              
-        })
-          //.done(function () {
-          //    $scope.showLogin = false;
-          //    $scope.showChat = true;
-          //})
-          //.fail(function () {
-          //    console.log("error");
-          //})
-          //.always(function () {
-          //    console.log("finished");
-        //});
-
+    else { 
         $scope.showLogin = false;
         $scope.showChat = true;
-        
+        $.get("http://localhost:1581/Guests/Get", { guest: localStorage.getItem('myUniqIdentity') }, function (data) {   $scope.User = data;  })
+    }
+
+    var positions;
+    if (navigator.geolocation) {  navigator.geolocation.getCurrentPosition(function (ps) { positions = ps;   });  }
+ 
+
+
+    $scope.ChatStart = function () { 
+        $scope.User.InboundUrl = window.location.href;
+        $scope.User.UserAgent = navigator.userAgent;
+        $scope.User.Latitude = positions.coords.latitude.toString();
+        $scope.User.Longitude = positions.coords.longitude.toString();
+        $.post("http://localhost:1581/Guests/Create", { guest: $scope.User }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
+        $scope.showLogin = false;
+        $scope.showChat = true;
+      
     }
 
     $scope.sendMessage = function () {
@@ -69,7 +49,7 @@ globalmodule.controller('mainCtrl', function ($scope, ChatService) {
 
 
     hubproxy.gethub.newData = function (User) {
-        $scope.messages.push({ Name: User.Name, Message: User.Message });
+        $scope.messages.push({ NameSurname: User.NameSurname, Message: User.Message });
         $scope.$apply();
     }
 });
