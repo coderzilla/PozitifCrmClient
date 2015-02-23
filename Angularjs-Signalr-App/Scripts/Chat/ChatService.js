@@ -1,7 +1,7 @@
 ﻿'use strict';
 globalmodule.service('ChatService', function ($, $rootScope) {
     $.connection.hub.url = "http://localhost:1581/signalr";
-    var hubproxy = $.connection.chat;
+    var hubproxy = $.connection.communicationHub;
     var _conn = $.connection.hub;
     var _connopen = false;
 
