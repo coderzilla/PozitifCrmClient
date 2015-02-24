@@ -4,8 +4,7 @@ globalmodule.service('ChatService', function ($, $rootScope) {
     var hubproxy = $.connection.communicationHub;
     var _conn = $.connection.hub;
     var _connopen = false;
-
-
+    $.connection.hub.qs = { "client": true, "uniqueIdentifier" : localStorage.getItem("myUniqIdentity")  };   
     function _connectionOpen() {
         if ($.connection.hub.id != undefined) {
             $.connection.hub.stateChanged(function (change) {
@@ -22,6 +21,7 @@ globalmodule.service('ChatService', function ($, $rootScope) {
                         });
                     }
                     else {
+                       
                         _conn.logging = true;
                         _conn.start()
                         .done(function (change) {

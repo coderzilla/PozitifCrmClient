@@ -26,7 +26,11 @@ globalmodule.controller('mainCtrl', function ($scope, ChatService) {
         //$.post("http://localhost:1581/Guests/Create", { guest: $scope.User }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
 
          
-        $.post("http://localhost:1581/Guests/Create", { NameSurname: $scope.User.NameSurname, Email: $scope.User.Email, PhoneNumber: $scope.User.PhoneNumber, InboundUrl: window.location.href, UserAgent: navigator.userAgent, Latitude: positions.coords.latitude.toString(), Longitude: positions.coords.longitude.toString() }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
+        $.post("http://localhost:1581/Guests/Create", { NameSurname: $scope.User.NameSurname, Email: $scope.User.Email, PhoneNumber: $scope.User.PhoneNumber, InboundUrl: window.location.href, UserAgent: navigator.userAgent, Latitude: positions.coords.latitude.toString(), Longitude: positions.coords.longitude.toString() },
+            function (data) {
+                localStorage.setItem('myUniqIdentity', data);
+                $scope.User.UserUniqueIdentifier = data;
+            })
 
         $scope.showLogin = false;
         $scope.showChat = true;
