@@ -1,10 +1,11 @@
 ﻿'use strict';
-globalmodule.service('ChatService', function ($, $rootScope) {
+globalModule.service('ChatService', function ($, $rootScope) {
     $.connection.hub.url = "http://localhost:1581/signalr";
     var hubproxy = $.connection.communicationHub;
     var _conn = $.connection.hub;
     var _connopen = false;
-    $.connection.hub.qs = { "client": true, "uniqueIdentifier" : localStorage.getItem("myUniqIdentity")  };   
+    $.connection.hub.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
+
     function _connectionOpen() {
         if ($.connection.hub.id != undefined) {
             $.connection.hub.stateChanged(function (change) {
@@ -21,7 +22,6 @@ globalmodule.service('ChatService', function ($, $rootScope) {
                         });
                     }
                     else {
-                       
                         _conn.logging = true;
                         _conn.start()
                         .done(function (change) {
@@ -52,7 +52,7 @@ globalmodule.service('ChatService', function ($, $rootScope) {
     }
 
     return {
-        connOpen: _connectionOpen(),
+        connOpen: function () { _connectionOpen() },
         setData: function (data) {
             if (_connectionOpen())
             { hubproxy.server.sendMessage(data); }

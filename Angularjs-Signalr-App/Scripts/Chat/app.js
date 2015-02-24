@@ -1,1 +1,2 @@
-﻿var globalmodule = angular.module('App', []).value('$', $);
+﻿var globalModule = angular.module('App', ['ngCookies']).constant('$', $).value('connectedHubs', []);
+ 

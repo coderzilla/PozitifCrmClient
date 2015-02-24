@@ -10,12 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> My ASP.NET Application</title>
 
-    <script src="/Scripts/jquery-1.10.2.js"></script>
-    <script src="/Scripts/angular.js"></script>
-
-    <script src="/Scripts/jquery.signalR-2.1.2.js"></script>
-    <script src="http://localhost:1581/signalr/hubs"></script>
-
+   
 
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
@@ -45,9 +40,22 @@
     </div>
 
 
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/underscore.min.js"></script>
+    <script src="/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-cookies.min.js"></script>
+    <script src="/Scripts/jquery.signalR-2.1.2.js"></script>
+
     <script src="~/Scripts/Chat/app.js"></script>
-    <script src="~/Scripts/Chat/ChatService.js"></script>
-    <script src="~/Scripts/Chat/ChatController.js"></script>
+    <script src="~/Scripts/Chat/clientHub.js"></script>
+
+    @*<script src="~/Scripts/Chat/ChatService.js"></script>*@
+    <script src="/Scripts/Chat/broadcastService.js"></script> 
+    <script src="/Scripts/Chat/signalR.js"></script>
+    <script src="/Scripts/Chat/communicationHub.js"></script>
+    <script src="/Scripts/Chat/broadcastHub.js"></script>
+    <script src="http://localhost:1581/signalr/hubs"></script>
+    <script src="/Scripts/Chat/ChatController.js"></script>
 </body>
 </html>
 

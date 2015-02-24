@@ -205,8 +205,14 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Chat\app.js" />
+    <Content Include="Scripts\Chat\broadcastHub.js" />
+    <Content Include="Scripts\Chat\broadcastService.js" />
+    <Content Include="Scripts\Chat\ChatController - Copy.js" />
     <Content Include="Scripts\Chat\ChatController.js" />
     <Content Include="Scripts\Chat\ChatService.js" />
+    <Content Include="Scripts\Chat\clientHub.js" />
+    <Content Include="Scripts\Chat\communicationHub.js" />
+    <Content Include="Scripts\Chat\signalR.js" />
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular-touch.min.js.map" />
     <Content Include="Scripts\angular-sanitize.min.js.map" />
@@ -974,6 +980,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\underscore.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

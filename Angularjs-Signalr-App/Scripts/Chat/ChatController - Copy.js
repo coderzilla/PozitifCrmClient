@@ -1,6 +1,7 @@
 ﻿
-globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadcastingService, communicationHub, broadcastHub) {
-    var hubproxy = communicationHub.hub; 
+globalModule.controller('mainCtrl', function ($scope, ChatService) {
+    var hubproxy = ChatService;
+
     $scope.messages = [];
     if (localStorage.getItem('myUniqIdentity') == null) {
         $scope.showLogin = true;
@@ -10,8 +11,6 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
         $scope.showLogin = false;
         $scope.showChat = true;
         $.get("http://localhost:1581/Guests/Get", { guest: localStorage.getItem('myUniqIdentity') }, function (data) { $scope.User = data; })
-        communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
-        //hubproxy.reconnecting();
     }
 
     var positions;
@@ -28,11 +27,10 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
         $.post("http://localhost:1581/Guests/Create", { NameSurname: $scope.User.NameSurname, Email: $scope.User.Email, PhoneNumber: $scope.User.PhoneNumber, InboundUrl: window.location.href, UserAgent: navigator.userAgent, Latitude: positions.coords.latitude.toString(), Longitude: positions.coords.longitude.toString() }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
         var myVar = setInterval(function () {
             if (localStorage.getItem('myUniqIdentity') != null) {
-                communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
-                hubproxy.connect();
+             
+                hubproxy.connOpen();
                 $scope.showLogin = false;
                 $scope.showChat = true;
-                window.clearInterval(myVar)
             }
         }, 1000);
 
@@ -52,9 +50,13 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
 
 
     function sendmsg() {
-        communicationHub.hub.sendMessage($scope.User); 
+        hubproxy.setData($scope.User);
         $scope.User.Message = "";
     }
 
- 
+
+    hubproxy.gethub.newData = function (User) {
+        $scope.messages.push({ NameSurname: User.NameSurname, Message: User.Message });
+        $scope.$apply();
+    }
 });
