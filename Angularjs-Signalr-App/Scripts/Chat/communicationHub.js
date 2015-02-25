@@ -46,9 +46,17 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
             },
             'newData': function (data) {
                 alert("asd")
+            },
+            'newChat': function (data) {
+                hub.accessible(data).done(function(data){
+                    if (data.IsSuccess && data.Result) {
+                        CommunicationHub.showChat = true;
+                        $rootScope.$apply();
+                    }
+                });
             }
         },
-        methods: ['lock', 'unlock', 'newData', 'sendMessage'],
+        methods: ['lock', 'unlock', 'newData', 'sendMessage','accessible'],
         errorHandler: function (error) {
             console.error(error);
         }
@@ -99,6 +107,7 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
     CommunicationHub.connect = function () {
         return hub.connect();
     }
+    CommunicationHub.showChat = false;
     CommunicationHub.disconnect = function () {
         //hub.connection.qs = { "closed": true };
         //$timeout(function () {

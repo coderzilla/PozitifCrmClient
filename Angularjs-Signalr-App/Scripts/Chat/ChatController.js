@@ -2,15 +2,21 @@
 globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadcastingService, communicationHub, broadcastHub) {
     var hubproxy = communicationHub.hub; 
     $scope.messages = [];
+    $scope.communication = communicationHub;
     if (localStorage.getItem('myUniqIdentity') == null) {
         $scope.showLogin = true;
         $scope.showChat = false;
     }
     else {
         $scope.showLogin = false;
-        $scope.showChat = true;
-        $.get("http://localhost:1581/Guests/Get", { guest: localStorage.getItem('myUniqIdentity') }, function (data) { $scope.User = data; })
+        $scope.showChat = false;
         communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
+        $.get("http://localhost:1581/Guests/Get", { guest: localStorage.getItem('myUniqIdentity') },
+            function (data) {
+                $scope.User = data;
+                communicationHub.connect();
+            })
+       
         //hubproxy.reconnecting();
     }
 
@@ -25,15 +31,18 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
         //$scope.User.Latitude = positions.coords.latitude.toString();
         //$scope.User.Longitude = positions.coords.longitude.toString();
         //$.post("http://localhost:1581/Guests/Create", { guest: $scope.User }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
-        $.post("http://localhost:1581/Guests/Create", { NameSurname: $scope.User.NameSurname, Email: $scope.User.Email, PhoneNumber: $scope.User.PhoneNumber, InboundUrl: window.location.href, UserAgent: navigator.userAgent, Latitude: positions.coords.latitude.toString(), Longitude: positions.coords.longitude.toString() }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
+        $.post("http://localhost:1581/Guests/Create", { NameSurname: $scope.User.NameSurname, Email: $scope.User.Email, PhoneNumber: $scope.User.PhoneNumber, InboundUrl: window.location.href, UserAgent: navigator.userAgent, Latitude: positions.coords.latitude.toString(), Longitude: positions.coords.longitude.toString() },
+            function (data) {
+                localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data;
+                if (localStorage.getItem('myUniqIdentity') != null) {
+                    communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
+                    hubproxy.connect();
+                    $scope.showLogin = false;
+                    $scope.showChat = true;
+                }
+            })
         var myVar = setInterval(function () {
-            if (localStorage.getItem('myUniqIdentity') != null) {
-                communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
-                hubproxy.connect();
-                $scope.showLogin = false;
-                $scope.showChat = true;
-                window.clearInterval(myVar)
-            }
+          
         }, 1000);
 
     }
