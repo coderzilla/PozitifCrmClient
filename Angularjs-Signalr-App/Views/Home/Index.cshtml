@@ -28,7 +28,7 @@
             <button class="btn btn-lg btn-primary btn-block" ng-click="ChatStart()" type="button">Başlat</button>
         </div>
 
-        <div ng-show="showChat" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
+        <div ng-show="communication.showChat" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
             <h2>Hoş geldiniz.</h2>
             <ul style="list-style:none; padding:10px; height:175px; overflow-y: scroll; overflow-x: hidden;  border: 1px solid rgb(228, 228, 228); border-radius: 5px;">
                 <li ng-repeat="msg in messages"><span style="color:blue"> {{msg.NameSurname}} :</span> {{msg.Message}}</li>

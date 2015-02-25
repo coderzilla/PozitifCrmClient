@@ -2,17 +2,22 @@
 globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadcastingService, communicationHub, broadcastHub, $cookieStore) {
     var hubproxy = communicationHub.hub; 
     $scope.messages = communicationHub.GetMessages;
+    $scope.communication = communicationHub;
     if (localStorage.getItem('myUniqIdentity') == null) {
         $scope.showLogin = true;
         $scope.showChat = false;
     }
     else {
         $scope.showLogin = false;
-        $scope.showChat = true;
+        $scope.showChat = false;
         communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
-        $.get("http://localhost:1581/Guests/Get", { guest: $cookieStore.get('myUniqIdentity') }, function (data) { $scope.User = data; })
-        
-        hubproxy.connect();
+        $.get("http://localhost:1581/Guests/Get", { guest: localStorage.getItem('myUniqIdentity') },
+            function (data) {
+                $scope.User = data;
+                communicationHub.connect();
+            })
+       
+        //hubproxy.reconnecting();
     }
 
     var positions;
@@ -64,5 +69,5 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
     function sendmsg() {
         communicationHub.hub.sendMessage($scope.User); 
         $scope.User.Message = "";
-    } 
+    }
 });
