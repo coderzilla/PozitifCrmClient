@@ -3,15 +3,16 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
     var hubproxy = communicationHub.hub; 
     $scope.messages = communicationHub.GetMessages;
     $scope.communication = communicationHub;
-    if (localStorage.getItem('myUniqIdentity') == null) {
+    var myUniqIdentity = $cookieStore.get('myUniqIdentity');
+    if (myUniqIdentity == null) {
         $scope.showLogin = true;
         $scope.showChat = false;
     }
     else {
         $scope.showLogin = false;
         $scope.showChat = false;
-        communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
-        $.get("http://localhost:1581/Guests/Get", { guest: localStorage.getItem('myUniqIdentity') },
+        communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
+        $.get("http://localhost:1581/Guests/Get", { guest: myUniqIdentity },
             function (data) {
                 $scope.User = data;
                 communicationHub.connect();
@@ -40,11 +41,11 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
             Latitude: positions.coords.latitude.toString(),
             Longitude: positions.coords.longitude.toString()
         }, function (data) {
-            $cookieStore.put('myUniqIdentity', data); 
-            //localStorage.setItem('myUniqIdentity', data); 
+            $cookieStore.put('myUniqIdentity', data);
+            myUniqIdentity = data; 
             $scope.User.UserUniqueIdentifier = data;
-            if (localStorage.getItem('myUniqIdentity') != null) {
-                communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
+            if (myUniqIdentity != null) {
+                communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
                
                 hubproxy.connect();
                 $scope.showLogin = false;
