@@ -10,6 +10,7 @@
 
 globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHubs, $timeout, broadcastingService) {
     var CommunicationHub = this;
+    CommunicationHub.GetMessages=[];
     var hub = new Hub('communicationHub', {
         rootPath: 'http://localhost:1581',
         listeners: {
@@ -45,7 +46,8 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                 $rootScope.$apply();
             },
             'newData': function (data) {
-                alert("asd")
+                CommunicationHub.GetMessages.push(data);
+                $rootScope.$apply();
             }
         },
         methods: ['lock', 'unlock', 'newData', 'sendMessage'],

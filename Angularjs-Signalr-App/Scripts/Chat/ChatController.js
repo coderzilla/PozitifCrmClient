@@ -1,7 +1,7 @@
 ﻿
-globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadcastingService, communicationHub, broadcastHub) {
+globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadcastingService, communicationHub, broadcastHub, $cookieStore) {
     var hubproxy = communicationHub.hub; 
-    $scope.messages = [];
+    $scope.messages = communicationHub.GetMessages;
     if (localStorage.getItem('myUniqIdentity') == null) {
         $scope.showLogin = true;
         $scope.showChat = false;
@@ -9,9 +9,10 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
     else {
         $scope.showLogin = false;
         $scope.showChat = true;
-        $.get("http://localhost:1581/Guests/Get", { guest: localStorage.getItem('myUniqIdentity') }, function (data) { $scope.User = data; })
         communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
-        //hubproxy.reconnecting();
+        $.get("http://localhost:1581/Guests/Get", { guest: $cookieStore.get('myUniqIdentity') }, function (data) { $scope.User = data; })
+        
+        hubproxy.connect();
     }
 
     var positions;
@@ -25,17 +26,26 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
         //$scope.User.Latitude = positions.coords.latitude.toString();
         //$scope.User.Longitude = positions.coords.longitude.toString();
         //$.post("http://localhost:1581/Guests/Create", { guest: $scope.User }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
-        $.post("http://localhost:1581/Guests/Create", { NameSurname: $scope.User.NameSurname, Email: $scope.User.Email, PhoneNumber: $scope.User.PhoneNumber, InboundUrl: window.location.href, UserAgent: navigator.userAgent, Latitude: positions.coords.latitude.toString(), Longitude: positions.coords.longitude.toString() }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
-        var myVar = setInterval(function () {
+        $.post("http://localhost:1581/Guests/Create", {
+            NameSurname: $scope.User.NameSurname,
+            Email: $scope.User.Email,
+            PhoneNumber: $scope.User.PhoneNumber,
+            InboundUrl: window.location.href,
+            UserAgent: navigator.userAgent,
+            Latitude: positions.coords.latitude.toString(),
+            Longitude: positions.coords.longitude.toString()
+        }, function (data) {
+            $cookieStore.put('myUniqIdentity', data); 
+            //localStorage.setItem('myUniqIdentity', data); 
+            $scope.User.UserUniqueIdentifier = data;
             if (localStorage.getItem('myUniqIdentity') != null) {
                 communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": localStorage.getItem("myUniqIdentity") };
+               
                 hubproxy.connect();
                 $scope.showLogin = false;
                 $scope.showChat = true;
-                window.clearInterval(myVar)
             }
-        }, 1000);
-
+        })
     }
 
     $scope.sendMessage = function () {
@@ -54,7 +64,5 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
     function sendmsg() {
         communicationHub.hub.sendMessage($scope.User); 
         $scope.User.Message = "";
-    }
-
- 
+    } 
 });
