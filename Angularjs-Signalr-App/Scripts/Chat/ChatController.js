@@ -1,6 +1,7 @@
 ﻿
-globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadcastingService, communicationHub, broadcastHub, $cookieStore) {
-    var hubproxy = communicationHub.hub; 
+globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, broadcastingService, communicationHub, broadcastHub, $cookieStore) {
+    var hubproxy = communicationHub.hub;
+    $scope.skillId = 86;
     $scope.messages = communicationHub.GetMessages;
     $scope.communication = communicationHub;
     var myUniqIdentity = $cookieStore.get('myUniqIdentity');
@@ -12,11 +13,12 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
         $scope.showLogin = false;
         $scope.showChat = false;
         communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
-        $.get("http://localhost:1581/Guests/Get", { guest: myUniqIdentity },
-            function (data) {
-                $scope.User = data;
+        $http.get("http://localhost:1581/api/Guest/Get/" + myUniqIdentity).success(function (data, status, header, config) {
+            if (data.IsSuccess) {
+                $scope.User = data.Result;
                 communicationHub.connect();
-            })
+            }
+        });
        
         //hubproxy.reconnecting();
     }
@@ -31,27 +33,39 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, broadc
         //$scope.User.UserAgent = navigator.userAgent;
         //$scope.User.Latitude = positions.coords.latitude.toString();
         //$scope.User.Longitude = positions.coords.longitude.toString();
-        //$.post("http://localhost:1581/Guests/Create", { guest: $scope.User }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
-        $.post("http://localhost:1581/Guests/Create", {
+        //$.post("http://localhost:1581/api/Guest/", { guest: $scope.User }, function (data) { localStorage.setItem('myUniqIdentity', data); $scope.User.UserUniqueIdentifier = data; })
+        var data = {
             NameSurname: $scope.User.NameSurname,
             Email: $scope.User.Email,
             PhoneNumber: $scope.User.PhoneNumber,
-            InboundUrl: window.location.href,
-            UserAgent: navigator.userAgent,
-            Latitude: positions.coords.latitude.toString(),
-            Longitude: positions.coords.longitude.toString()
-        }, function (data) {
-            $cookieStore.put('myUniqIdentity', data);
-            myUniqIdentity = data; 
-            $scope.User.UserUniqueIdentifier = data;
-            if (myUniqIdentity != null) {
-                communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
-               
-                hubproxy.connect();
-                $scope.showLogin = false;
-                $scope.showChat = true;
+            SkillId: $scope.skillId
+        };
+        $http({
+            method: 'POST',
+            url: "http://localhost:1581/api/Guest/createorget",
+            data: JSON.stringify(data),
+            cache: false
+        }).success(function (data, status, header, config) {
+            if (data.IsSuccess) {
+                $cookieStore.put('myUniqIdentity', data.Result);
+                myUniqIdentity = data.Result;
+                $scope.User.UserUniqueIdentifier = data.Result;
+                if (myUniqIdentity != null) {
+                    communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
+                    hubproxy.connect();
+                    $scope.showLogin = false;
+                    $scope.showChat = true;
+                }
             }
-        })
+        });
+        //$.post("http://localhost:1581/Guests/Create", {
+        //    NameSurname: $scope.User.NameSurname,
+        //    Email: $scope.User.Email,
+        //    PhoneNumber: $scope.User.PhoneNumber,
+        //    SkillId : $scope.skillId
+        //}, function (data) {
+           
+        //})
     }
 
     $scope.sendMessage = function () {

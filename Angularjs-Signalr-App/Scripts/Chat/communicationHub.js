@@ -49,12 +49,18 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                 alert("asd")
             },
             'newChat': function (data) {
-                hub.accessible(data).done(function(data){
-                    if (data.IsSuccess && data.Result) {
-                        CommunicationHub.showChat = true;
-                        $rootScope.$apply();
-                    }
-                });
+                $timeout(function () {
+                    hub.accessible(data).done(function (data) {
+                        if (data.IsSuccess && data.Result) {
+                            CommunicationHub.showChat = true;
+                            $rootScope.$apply();
+                        }
+                    });
+                },500);
+            },
+            'startChat': function (data) {
+                CommunicationHub.showChat = true;
+                $rootScope.$apply();
             }
         },
         methods: ['lock', 'unlock', 'newData', 'sendMessage','accessible'],
