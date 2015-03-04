@@ -67,7 +67,22 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
            
         //})
     }
-
+    $scope.sendSurvey = function (form) {
+        if(form.$valid)
+        {
+            var x = _.map(communicationHub.survey.SurveyQuestions, function (question) {
+                if (question.SelectedAnswer) {
+                    return question.SelectedAnswer;
+                }
+            });
+            $http({
+                method: 'POST',
+                url: "http://localhost:1581/api/guest/postSurvey/" + $cookieStore.get('myUniqIdentity'),
+                data: x,
+                cache: false
+            });
+        }
+    }
     $scope.sendMessage = function () {
         if ($scope.User.Message.length > 0) {
             sendmsg();

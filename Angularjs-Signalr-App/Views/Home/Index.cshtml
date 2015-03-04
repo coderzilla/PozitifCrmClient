@@ -27,7 +27,23 @@
             <br />
             <button class="btn btn-lg btn-primary btn-block" ng-click="ChatStart()" type="button">Başlat</button>
         </div>
-
+        <div ng-show="communication.showSurvey" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
+            <ng-form name="surveyForm">
+                <h2>{{communication.survey.Title}}</h2>
+                <ul ng-repeat="question in communication.survey.SurveyQuestions | orderBy : Order">
+                    <li>
+                        <span>{{question.Order}}-{{question.Question}}</span>
+                        <ul>
+                            <li ng-repeat="answer in question.SurveyAnswers | orderBy: Order">
+                                <input type="radio" ng-model="question.SelectedAnswer" value="{{answer.Id}}" name="{{question.Id}}" ng-required="!answer.Selected" />
+                                <span>{{answer.Answer}}</span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <button ng-click="sendSurvey(surveyForm)" type="button" class="btn btn-lg btn-primary btn-block">Gönder</button>
+            </ng-form>
+        </div>
         <div ng-show="communication.showChat" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
             <h2>Hoş geldiniz.</h2>
             <ul style="list-style:none; padding:10px; height:175px; overflow-y: scroll; overflow-x: hidden;  border: 1px solid rgb(228, 228, 228); border-radius: 5px;">

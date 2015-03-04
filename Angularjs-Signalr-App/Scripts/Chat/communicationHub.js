@@ -51,12 +51,21 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
             'newChat': function (data) {
                 $timeout(function () {
                     hub.accessible(data).done(function (data) {
+                        console.log(data);
+
                         if (data.IsSuccess && data.Result) {
                             CommunicationHub.showChat = true;
                             $rootScope.$apply();
                         }
                     });
                 },500);
+            },
+            'showSurvey' : function(data){
+                $timeout(function () {
+                    CommunicationHub.survey = data;
+                    CommunicationHub.showSurvey = true;
+                    $rootScope.$apply();
+                });
             },
             'startChat': function (data) {
                 CommunicationHub.showChat = true;
