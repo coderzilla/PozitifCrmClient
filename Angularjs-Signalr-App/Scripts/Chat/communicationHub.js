@@ -10,7 +10,7 @@
 
 globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHubs, $timeout, broadcastingService) {
     var CommunicationHub = this;
-    CommunicationHub.GetMessages=[];
+    CommunicationHub.Messages=[];
     var hub = new Hub('communicationHub', {
         rootPath: 'http://localhost:1581',
         listeners: {
@@ -60,6 +60,10 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                     });
                 },500);
             },
+            'newMessage': function (data) {
+                CommunicationHub.Messages.push(data);
+                $rootScope.$apply();
+            },
             'showSurvey' : function(data){
                 $timeout(function () {
                     CommunicationHub.survey = data;
@@ -72,7 +76,7 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                 $rootScope.$apply();
             }
         },
-        methods: ['lock', 'unlock', 'newData', 'sendMessage','accessible'],
+        methods: ['lock', 'unlock', 'newData', 'SendGuestMessage', 'accessible'],
         errorHandler: function (error) {
             console.error(error);
         }
