@@ -72,11 +72,12 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                 });
             },
             'startChat': function (data) {
+                CommunicationHub.chatSessionId = data.Id;
                 CommunicationHub.showChat = true;
                 $rootScope.$apply();
             }
         },
-        methods: ['lock', 'unlock', 'newData', 'SendGuestMessage', 'accessible'],
+        methods: ['lock', 'unlock', 'newData', 'newChat', 'SendGuestMessage', 'accessible'],
         errorHandler: function (error) {
             console.error(error);
         }

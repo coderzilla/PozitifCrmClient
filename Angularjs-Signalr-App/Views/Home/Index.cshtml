@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> My ASP.NET Application</title>
 
-   
+
 
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
@@ -19,9 +19,9 @@
     <div class="container" ng-controller="mainCtrl">
         <div ng-show="showLogin" style="width: 30%; margin-left: 35% !important; margin-top:10%;" class="form-signin">
             <h2 class="form-signin-heading">Chat Başlat</h2>
-            <input ng-model="User.NameSurname" type="text"  class="form-control" placeholder="Ad Soyad" autofocus>
+            <input ng-model="User.NameSurname" type="text" class="form-control" placeholder="Ad Soyad" autofocus>
             <br />
-            <input ng-model="User.Email" type="text"  class="form-control" placeholder="Email address">
+            <input ng-model="User.Email" type="text" class="form-control" placeholder="Email address">
             <br />
             <input ng-model="User.PhoneNumber" type="text" class="form-control" placeholder="Telefon">
             <br />
@@ -44,11 +44,17 @@
                 <button ng-click="sendSurvey(surveyForm)" type="button" class="btn btn-lg btn-primary btn-block">Gönder</button>
             </ng-form>
         </div>
-        <div ng-show="communication.showChat" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
+        <div ng-show="showChat" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
             <h2>Hoş geldiniz.</h2>
             <ul style="list-style:none; padding:10px; height:175px; overflow-y: scroll; overflow-x: hidden;  border: 1px solid rgb(228, 228, 228); border-radius: 5px;">
-                <li ng-repeat="msg in messages"><span ng-if="msg.IsGuest==false" style="color:blue"> {{Operator.name}} :</span>
-                <span ng-if="msg.IsGuest" style="color:blue"> {{ User.NameSurname}} :</span> {{msg.Message}}</li>{{msg.IsGuest}}
+                <li ng-repeat="msg in messages">
+                    <div style="width: 100%; text-align: right;" ng-if="msg.IsGuest==false">
+                        <span style="padding: 5px;border: 1px solid rgb(221, 221, 221);border-radius: 4px;">  {{msg.Message}}</span>   <img ng-src="{{User.SuplineOperator.PictureUri}}" style="max-width:32px; margin-left:5px;" />
+                    </div>
+                    <div style="width: 100%; text-align: left;" ng-if="msg.IsGuest">
+                        <img ng-src="{{User.Images}}" style="max-width:32px; margin-right:5px;" /> <span style="padding: 5px;border: 1px solid rgb(221, 221, 221);border-radius: 4px;"> {{msg.Message}}</span>
+                    </div>
+                </li>
             </ul>
             <textarea ng-keypress="EnterSend($event.keyCode)" class="form-control" placeholder="Mesajınız..." ng-model="User.Message"></textarea>
             <br />
@@ -67,7 +73,7 @@
     <script src="~/Scripts/Chat/clientHub.js"></script>
 
     @*<script src="~/Scripts/Chat/ChatService.js"></script>*@
-    <script src="/Scripts/Chat/broadcastService.js"></script> 
+    <script src="/Scripts/Chat/broadcastService.js"></script>
     <script src="/Scripts/Chat/signalR.js"></script>
     <script src="/Scripts/Chat/communicationHub.js"></script>
     <script src="/Scripts/Chat/broadcastHub.js"></script>

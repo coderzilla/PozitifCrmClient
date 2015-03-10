@@ -1,10 +1,14 @@
 ﻿
 globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, broadcastingService, communicationHub, broadcastHub, $cookieStore) {
+    $scope.$on('chatSessionIdUpdated', function (data) {
+        console.log(data);
+    });
     var hubproxy = communicationHub.hub;
     $scope.skillId = 28;
     $scope.messages = communicationHub.Messages;
     $scope.communication = communicationHub;
-    $scope.Operator = { name: "Operator" };
+    $scope.IsOperatorConn = false;
+    $scope.communication.showChat = false;
     var myUniqIdentity = $cookieStore.get('myUniqIdentity');
     if (myUniqIdentity == null) {
         $scope.showLogin = true;
@@ -16,14 +20,16 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
         communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
         $http.get("http://localhost:1581/api/guest/get/" + myUniqIdentity).success(function (data, status, header, config) {
             if (data.IsSuccess) {
-                $scope.User = data.Result;
+                $scope.User = data.Result; 
                 communicationHub.connect();
+                $scope.showChat = true;
             }
         });
        
         //hubproxy.reconnecting();
+       
     }
-
+    
     var positions;
     if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(function (ps) { positions = ps; }); }
 
@@ -54,8 +60,7 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
                 if (myUniqIdentity != null) {
                     communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
                     hubproxy.connect();
-                    $scope.showLogin = false;
-                    $scope.showChat = true;
+                    $scope.showLogin = false; 
                 }
             }
         });
@@ -83,7 +88,7 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
                 cache: false
             });
             $scope.communication.showSurvey = false;
-            $scope.communication.showChat = true;
+            $scope.showChat = true;
         }
     }
     $scope.sendMessage = function () {
@@ -103,7 +108,7 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
         var newMessage = {
             Message: $scope.User.Message,
             MessageDate: new Date(),
-            ChatSessionId: $scope.User.ChatSessionId,
+            ChatSessionId: communicationHub.chatSessionId,
             MessageStatus: 1,
             MessageType: 1,
             shownMessageDate: new Date().getHours() + ":" + new Date().getMinutes(),
