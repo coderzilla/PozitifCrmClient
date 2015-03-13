@@ -59,6 +59,7 @@
             <textarea ng-keypress="EnterSend($event.keyCode)" class="form-control" placeholder="Mesajınız..." ng-model="User.Message"></textarea>
             <br />
             <button class="btn btn-lg btn-primary btn-block" ng-click="sendMessage()" type="button">Gönder</button>
+            <button class="btn btn-danger btn-block" ng-click="stopSession()" type="button">Kapat</button>
         </div>
     </div>
 

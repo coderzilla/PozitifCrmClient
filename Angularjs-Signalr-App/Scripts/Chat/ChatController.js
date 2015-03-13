@@ -4,7 +4,7 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
         console.log(data);
     });
     var hubproxy = communicationHub.hub;
-    $scope.skillId = 28;
+    $scope.skillId = 86;
     $scope.messages = communicationHub.Messages;
     $scope.communication = communicationHub;
     $scope.IsOperatorConn = false;
@@ -23,6 +23,10 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
                 $scope.User = data.Result; 
                 communicationHub.connect();
                 $scope.showChat = true;
+            }
+            else {
+                $scope.showLogin = true;
+                $scope.showChat = false;
             }
         });
        
@@ -72,6 +76,18 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
         //}, function (data) {
            
         //})
+    }
+    $scope.stopSession = function () {
+        $http.get("http://localhost:1581/api/chat/stopChatFromGuest/" + communicationHub.chatSessionId + "/"+  $cookieStore.get('myUniqIdentity')).success(function (data, status, header, config) {
+            if (data.IsSuccess) {
+                if (data.Result) {
+                    communicationHub.survey = data.Result;
+                }
+                else {
+                    communicationHub.disconnect();
+                }
+            }
+        });
     }
     $scope.sendSurvey = function (form) {
         if(form.$valid)

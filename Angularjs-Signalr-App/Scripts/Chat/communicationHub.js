@@ -8,9 +8,14 @@
     DISCONNECTED: { statusColor: "rgb(251, 70, 11)", statusMessage: "Offline" }
 }
 
-globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHubs, $timeout, broadcastingService) {
+globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHubs, $timeout, broadcastingService, $http) {
     var CommunicationHub = this;
-    CommunicationHub.Messages=[];
+    CommunicationHub.Messages = [];
+    $http.get("http://localhost:1581/api/chat/getAutoSystemMessages").success(function (data) {
+        if (data.IsSuccess) {
+            CommunicationHub.autoMessages = data.Result;
+        }
+    });
     var hub = new Hub('communicationHub', {
         rootPath: 'http://localhost:1581',
         listeners: {
@@ -49,7 +54,7 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                 alert("asd")
             },
             'newChat': function (data) {
-                $timeout(function () {
+                $timeout(function () {              
                     hub.accessible(data).done(function (data) {
                         console.log(data);
 
@@ -75,6 +80,14 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                 CommunicationHub.chatSessionId = data.Id;
                 CommunicationHub.showChat = true;
                 $rootScope.$apply();
+            },
+            'stopChat': function (reason, data) {
+                if (data && data.IsSuccess) {
+                    alert("asda");
+                }
+                else {
+                    alert("asdasdasadasd");
+                }
             }
         },
         methods: ['lock', 'unlock', 'newData', 'newChat', 'SendGuestMessage', 'accessible'],
