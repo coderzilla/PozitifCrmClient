@@ -67,6 +67,7 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
             },
             'newMessage': function (data) {
                 CommunicationHub.Messages.push(data);
+                CommunicationHub.hub.messageDelivered(CommunicationHub.chatSessionId, data.Id);
                 $rootScope.$apply();
             },
             'showSurvey' : function(data){
@@ -90,7 +91,7 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                 }
             }
         },
-        methods: ['lock', 'unlock', 'newData', 'newChat', 'SendGuestMessage', 'accessible'],
+        methods: ['lock', 'unlock', 'newData', 'newChat', 'SendGuestMessage', 'accessible','messageDelivered','clientWritingStatusChanged'],
         errorHandler: function (error) {
             console.error(error);
         }

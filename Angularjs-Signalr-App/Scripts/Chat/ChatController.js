@@ -1,9 +1,17 @@
 ﻿
-globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, broadcastingService, communicationHub, broadcastHub, $cookieStore) {
+globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, $http, broadcastingService, communicationHub, broadcastHub, $cookieStore) {
     $scope.$on('chatSessionIdUpdated', function (data) {
         console.log(data);
     });
     var hubproxy = communicationHub.hub;
+    $scope.isWriting = false
+    $scope.$watch('isWriting', function (args) {
+        console.log("changed - " + args);
+        if ($scope.isWriting != args) {
+            $scope.isWriting = args;
+            communicationHub.hub.clientWritingStatusChanged(communicationHub.chatSessionId, args);
+        }
+    })
     $scope.skillId = 86;
     $scope.messages = communicationHub.Messages;
     $scope.communication = communicationHub;
@@ -20,7 +28,7 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
         communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
         $http.get("http://localhost:1581/api/guest/get/" + myUniqIdentity).success(function (data, status, header, config) {
             if (data.IsSuccess) {
-                $scope.User = data.Result; 
+                $scope.User = data.Result;
                 communicationHub.connect();
                 $scope.showChat = true;
             }
@@ -29,11 +37,11 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
                 $scope.showChat = false;
             }
         });
-       
+
         //hubproxy.reconnecting();
-       
+
     }
-    
+
     var positions;
     if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(function (ps) { positions = ps; }); }
 
@@ -64,7 +72,7 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
                 if (myUniqIdentity != null) {
                     communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
                     hubproxy.connect();
-                    $scope.showLogin = false; 
+                    $scope.showLogin = false;
                 }
             }
         });
@@ -74,11 +82,11 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
         //    PhoneNumber: $scope.User.PhoneNumber,
         //    SkillId : $scope.skillId
         //}, function (data) {
-           
+
         //})
     }
     $scope.stopSession = function () {
-        $http.get("http://localhost:1581/api/chat/stopChatFromGuest/" + communicationHub.chatSessionId + "/"+  $cookieStore.get('myUniqIdentity')).success(function (data, status, header, config) {
+        $http.get("http://localhost:1581/api/chat/stopChatFromGuest/" + communicationHub.chatSessionId + "/" + $cookieStore.get('myUniqIdentity')).success(function (data, status, header, config) {
             if (data.IsSuccess) {
                 if (data.Result) {
                     communicationHub.survey = data.Result;
@@ -90,8 +98,7 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
         });
     }
     $scope.sendSurvey = function (form) {
-        if(form.$valid)
-        {
+        if (form.$valid) {
             var x = _.map(communicationHub.survey.SurveyQuestions, function (question) {
                 if (question.SelectedAnswer) {
                     return question.SelectedAnswer;
@@ -133,5 +140,27 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout,$http, 
         communicationHub.hub.SendGuestMessage(newMessage);
         $scope.messages.push(newMessage);
         $scope.User.Message = "";
+    }
+    $scope.focused = function () {
+        if ($scope.User.Message.length > 0) {
+            $scope.isWriting = true;
+        }
+    }
+    $scope.blured = function () {
+        //alert("sadasd");
+        $scope.isWriting = false;
+    }
+    $scope.keyPressed = function (keyCode) {
+        if (keyCode == "13" && $scope.User.Message.length > 0) {
+            sendmsg();
+        }
+    }
+    $scope.writing = function (keyCode) {
+        if ($scope.User.Message.length > 0) {
+            $scope.isWriting = true;
+        }
+        else {
+            $scope.isWriting = false;
+        }
     }
 });
