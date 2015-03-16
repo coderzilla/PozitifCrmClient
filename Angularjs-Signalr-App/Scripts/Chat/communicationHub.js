@@ -69,6 +69,7 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
                 CommunicationHub.Messages.push(data);
                 CommunicationHub.hub.messageDelivered(CommunicationHub.chatSessionId, data.Id);
                 $rootScope.$apply();
+                CommunicationHub.setscrollbottom();
             },
             'showSurvey' : function(data){
                 $timeout(function () {
@@ -80,6 +81,9 @@ globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHub
             'startChat': function (data) {
                 CommunicationHub.chatSessionId = data.Id;
                 CommunicationHub.showChat = true;
+                if (CommunicationHub.chatSessionId != null) {
+                    CommunicationHub.setUser();
+                }
                 $rootScope.$apply();
             },
             'stopChat': function (reason, data) {

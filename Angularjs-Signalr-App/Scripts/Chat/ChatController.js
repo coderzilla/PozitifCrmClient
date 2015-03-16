@@ -140,6 +140,7 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, $http,
         communicationHub.hub.SendGuestMessage(newMessage);
         $scope.messages.push(newMessage);
         $scope.User.Message = "";
+        communicationHub.setscrollbottom();
     }
     $scope.focused = function () {
         if ($scope.User.Message.length > 0) {
@@ -162,5 +163,19 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, $http,
         else {
             $scope.isWriting = false;
         }
+    }
+
+
+    communicationHub.setUser = function() {
+        communicationHub.hub.connection.qs = { "client": true, "uniqueIdentifier": myUniqIdentity };
+        $http.get("http://localhost:1581/api/guest/get/" + myUniqIdentity).success(function (data, status, header, config) {
+            if (data.IsSuccess) {
+                $scope.User = data.Result; 
+            } 
+        }); 
+    }
+   
+    communicationHub.setscrollbottom = function() {
+        $("#chatcontenti").animate({ scrollTop: $("#chatcontenti").get(0).scrollHeight }, 250)
     }
 });

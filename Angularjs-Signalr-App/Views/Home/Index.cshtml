@@ -17,7 +17,7 @@
 </head>
 <body>
     <div class="container" ng-controller="mainCtrl">
-        <div ng-show="showLogin" style="width: 30%; margin-left: 35% !important; margin-top:10%;" class="form-signin">
+        <div ng-show="showLogin" style="width: 33%; margin-left: 32% !important; margin-top:10%;" class="form-signin">
             <h2 class="form-signin-heading">Chat Başlat</h2>
             <input ng-model="User.NameSurname" type="text" class="form-control" placeholder="Ad Soyad" autofocus>
             <br />
@@ -44,18 +44,30 @@
                 <button ng-click="sendSurvey(surveyForm)" type="button" class="btn btn-lg btn-primary btn-block">Gönder</button>
             </ng-form>
         </div>
-        <div ng-show="showChat" style="width: 30%; margin-left: 35% !important; margin-top:10%;padding: 15px;" class="form-signin">
+        <div ng-show="showChat" style="width: 30%; margin-left: 35% !important; margin-top:5%;padding: 15px;" class="form-signin">
             <h2>Hoş geldiniz.</h2>
-            <ul style="list-style:none; padding:10px; height:175px; overflow-y: scroll; overflow-x: hidden;  border: 1px solid rgb(228, 228, 228); border-radius: 5px;">
-                <li ng-repeat="msg in messages">
-                    <div style="width: 100%; text-align: right;" ng-if="msg.IsGuest==false">
-                        <span style="padding: 5px;border: 1px solid rgb(221, 221, 221);border-radius: 4px;">  {{msg.Message}}</span>   <img ng-src="{{User.SuplineOperator.PictureUri}}" style="max-width:32px; margin-left:5px;" />
+            <div id="chatcontenti" style="padding:10px; height:250px; overflow-y: scroll; overflow-x: hidden;  border: 1px solid rgb(228, 228, 228); border-radius: 5px;">
+                <div ng-repeat="msg in messages" style="width: 100%; margin-bottom:10px;float:left">
+                    <div ng-if="msg.IsGuest==false" style="position:relative;">
+                        <div style="width:70%;  margin-left: 15%;float:left;border: 1px solid rgb(221, 221, 221);border-radius: 4px;  padding: 2px 2px; ">
+                            <span ng-if="msg.MessageType==1" style="padding: 5px;  font-size: 11px; float: left;  width: 85%;  word-wrap: break-word;">  {{msg.Message}}</span>
+                            <img ng-src="{{msg.Message}}" ng-if="msg.MessageType==2" style="max-width:50px; max-height:50px;" />
+                        </div>
+                        <div style="width:15%;float:left;">
+                            <img ng-src="{{User.SuplineOperator.PictureUri}}" style="max-width:32px; margin-left:5px;border-radius: 50%;  border: 1px solid rgb(232, 232, 232);" />
+                        </div> 
                     </div>
-                    <div style="width: 100%; text-align: left;" ng-if="msg.IsGuest">
-                        <img ng-src="{{User.Images}}" style="max-width:32px; margin-right:5px;" /> <span style="padding: 5px;border: 1px solid rgb(221, 221, 221);border-radius: 4px;"> {{msg.Message}}</span>
+                    <div ng-if="msg.IsGuest" style="position:relative;">
+                        <div style="width:15%;float:left;">
+                            <img ng-src="{{User.Images}}" style="max-width:32px; margin-right:5px;  border-radius: 50%;  border: 1px solid rgb(232, 232, 232);" />
+                        </div>
+                        <div style="width:70%;float:left;border: 1px solid rgb(221, 221, 221);border-radius: 4px;  padding: 2px 2px; ">
+                            <span ng-if="msg.MessageType==1" style="padding: 5px;  font-size: 11px; width: 85%;  word-wrap: break-word;"> {{msg.Message}}</span>
+                            <img ng-src="{{msg.Message}}" ng-if="msg.MessageType==2" style="max-width:50px; max-height:50px;" />
+                        </div>
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
             <textarea ng-keydown="keyPressed($event.keyCode)" ng-keyup="writing($event.keyCode)" ng-focus="focused()" ng-blur="blured()" class="form-control" placeholder="Mesajınız..." ng-model="User.Message"></textarea>
             <br />
             <button class="btn btn-lg btn-primary btn-block" ng-click="sendMessage()" type="button">Gönder</button>
