@@ -5,10 +5,10 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, $http,
     });
     var hubproxy = communicationHub.hub;
     $scope.isWriting = false
+    var lastWatchResult = false;
     $scope.$watch('isWriting', function (args) {
-        console.log("changed - " + args);
-        if ($scope.isWriting != args) {
-            $scope.isWriting = args;
+        if (lastWatchResult != args) {
+            lastWatchResult = args;
             communicationHub.hub.clientWritingStatusChanged(communicationHub.chatSessionId, args);
         }
     })
@@ -43,7 +43,11 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, $http,
     }
 
     var positions;
-    if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(function (ps) { positions = ps; }); }
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (ps) {
+            communicationHub.geoPosition = ps;
+        });
+    }
 
 
 
@@ -142,14 +146,13 @@ globalModule.controller('mainCtrl', function ($scope, $compile, $timeout, $http,
         $scope.User.Message = "";
         communicationHub.setscrollbottom();
     }
-    $scope.focused = function () {
-        if ($scope.User.Message.length > 0) {
-            $scope.isWriting = true;
-        }
-    }
+    //$scope.focused = function () {
+    //    if ($scope.User.Message.length > 0) {
+    //        $scope.isWriting = true;
+    //    }
+    //}
     $scope.blured = function () {
-        //alert("sadasd");
-        $scope.isWriting = false;
+       $scope.isWriting = false;
     }
     $scope.keyPressed = function (keyCode) {
         if (keyCode == "13" && $scope.User.Message.length > 0) {

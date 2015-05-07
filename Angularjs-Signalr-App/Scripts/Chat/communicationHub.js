@@ -11,6 +11,7 @@
 globalModule.factory('communicationHub', function ($rootScope, Hub, connectedHubs, $timeout, broadcastingService, $http) {
     var CommunicationHub = this;
     CommunicationHub.Messages = [];
+    CommunicationHub.geoPosition = {};
     $http.get("http://localhost:1581/api/chat/getAutoSystemMessages").success(function (data) {
         if (data.IsSuccess) {
             CommunicationHub.autoMessages = data.Result;
